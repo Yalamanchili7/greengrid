@@ -2,6 +2,8 @@
 
 **Most Americans don't know where their electricity comes from. GreenGrid shows you.**
 
+**[Try it live →](https://greengrid-pink.vercel.app)**
+
 GreenGrid is an open source tool that connects government energy data into a single, location-specific energy report for any US address. Enter your address and electricity usage, and see the complete picture — where your power comes from, what it costs the environment, and what could be different.
 
 No account. No sales pitch. No ads. Just data.
