@@ -41,7 +41,7 @@ export default function GreenScoreGauge({ score, breakdown }) {
   return (
     <div className="glass-card p-6 sm:p-8 flex flex-col items-center">
       <h2 className="font-display font-semibold text-lg text-emerald-50/80 mb-1">
-        Your GreenScore™
+        Your GreenScore
       </h2>
       <p className="text-xs text-emerald-50/30 font-body mb-5 text-center">
         How well-positioned your home is for clean energy

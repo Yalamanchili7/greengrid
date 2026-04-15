@@ -20,7 +20,7 @@ export default function HowItWorks() {
     },
     {
       num: '04',
-      title: 'GreenScore™ Engine',
+      title: 'GreenScore Engine',
       description: 'Our composite scoring algorithm weighs solar potential (35%), energy efficiency (25%), grid cleanliness (25%), and economic feasibility (15%) into a single actionable score.',
       icon: '🧮',
     },
