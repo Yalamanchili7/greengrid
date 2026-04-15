@@ -1,5 +1,7 @@
+import { getGridFuelMix } from './epaData';
+
 /**
- * GreenScore™ Algorithm
+ * GreenScore Algorithm
  * 
  * ALL inputs are REQUIRED. No silent defaults. No fallback values.
  * Every number comes from a verified data source.
@@ -111,6 +113,7 @@ export function calculateGreenScore({
     solarScore, efficiencyScore, gridScore, feasibilityScore,
     monthlyBillKwh, stateAvg: stateAvgConsumption, paybackYears,
     systemSizeKw, systemCost, annualSavings, electricityRate, emissionFactor,
+    state, solarCoverageRatio,
   });
 
   return {
@@ -158,23 +161,47 @@ function calculateCumulativeSavings(annualSavings, years) {
   return total;
 }
 
-function generateRecommendations({ solarScore, efficiencyScore, gridScore, feasibilityScore, monthlyBillKwh, stateAvg, paybackYears, systemSizeKw, systemCost, annualSavings, electricityRate, emissionFactor }) {
+function generateRecommendations({ solarScore, efficiencyScore, gridScore, feasibilityScore, monthlyBillKwh, stateAvg, paybackYears, systemSizeKw, systemCost, annualSavings, electricityRate, emissionFactor, state, solarCoverageRatio }) {
   const scenarios = [];
+  const gridFuelMix = getGridFuelMix(state);
+  const usageRatio = monthlyBillKwh / stateAvg;
+  const usageDiffPercent = Math.abs(Math.round((usageRatio - 1) * 100));
 
-  // Solar scenario — always show if location has any solar potential
+  // --- Rooftop solar scenario ---
+  // Demote impact if solar potential is poor (community solar will be more relevant)
   if (solarScore > 30) {
+    const solarImpact = solarScore < 40 ? 'low' : (feasibilityScore > 50 ? 'high' : 'medium');
     scenarios.push({
-      title: 'What if you added solar?',
-      impact: feasibilityScore > 50 ? 'high' : 'medium',
+      title: 'What if you added rooftop solar?',
+      impact: solarImpact,
       description: `A ${Math.round(systemSizeKw * 10) / 10}kW system at your location would generate enough to offset ${Math.min(Math.round(solarScore), 100)}% of your usage. Estimated cost: $${Math.round(systemCost).toLocaleString()} after the 30% federal tax credit. At current rates, the system would pay for itself in ${Math.round(paybackYears * 10) / 10} years.`,
       delta: `$${Math.round(annualSavings).toLocaleString()}/yr savings`,
     });
   }
 
-  // Usage comparison — show how they compare to neighbors
-  const usageRatio = monthlyBillKwh / stateAvg;
-  const usageDiffPercent = Math.abs(Math.round((usageRatio - 1) * 100));
+  // --- Community solar scenario ---
+  // Show when rooftop solar is limited — for renters, shaded homes, condos
+  if (solarScore < 40 || solarCoverageRatio < 0.5) {
+    scenarios.push({
+      title: 'What about community solar?',
+      impact: 'medium',
+      description: `Community solar programs let households subscribe to a share of a local solar farm — no rooftop installation needed. Subscribers typically see a 5–15% discount on their electricity bill. This is an option for renters, homeowners with shaded roofs, or anyone who can't install panels. Check your utility or energysage.com/community-solar for programs in your area.`,
+      delta: 'No installation needed',
+    });
+  }
 
+  // --- Green energy utility plans ---
+  // Show when grid is majority fossil — switching plans shifts demand toward renewables
+  if (gridFuelMix && gridFuelMix.fossilTotal > 50) {
+    scenarios.push({
+      title: 'What if you switched to a green energy plan?',
+      impact: gridFuelMix.fossilTotal > 70 ? 'high' : 'medium',
+      description: `Your grid is currently ${gridFuelMix.fossilTotal}% fossil-fueled. Many utilities offer green energy or renewable choice plans that source electricity from wind and solar farms. These plans typically cost $5–15/month more but shift your share of demand toward clean sources. Check your utility's website for "green power" or "renewable choice" options.`,
+      delta: `${gridFuelMix.fossilTotal}% fossil grid`,
+    });
+  }
+
+  // --- Usage comparison ---
   if (usageRatio > 1.1) {
     const potentialReduction = Math.round(monthlyBillKwh * 0.2 * electricityRate / 100 * 12);
     scenarios.push({
@@ -199,7 +226,19 @@ function generateRecommendations({ solarScore, efficiencyScore, gridScore, feasi
     });
   }
 
-  // Grid carbon context
+  // --- Energy efficiency deep-dive ---
+  // Show when usage is significantly above average — complements the usage comparison
+  if (usageRatio > 1.3) {
+    const efficiencySavings = Math.round(monthlyBillKwh * 0.25 * electricityRate / 100 * 12);
+    scenarios.push({
+      title: 'Where does home energy go?',
+      impact: usageRatio > 1.5 ? 'high' : 'medium',
+      description: `The three largest energy consumers in US homes are heating/cooling (43%), water heating (19%), and appliances (13%). A home energy audit — often free or subsidized through utilities — identifies where energy is being lost. The DOE estimates the average household can reduce energy use by 25–30% through efficiency improvements, which could save you ~$${efficiencySavings.toLocaleString()}/year.`,
+      delta: `~$${efficiencySavings.toLocaleString()}/yr potential`,
+    });
+  }
+
+  // --- Grid carbon context ---
   scenarios.push({
     title: 'Your grid\'s carbon profile',
     impact: gridScore < 50 ? 'high' : 'medium',
@@ -209,7 +248,29 @@ function generateRecommendations({ solarScore, efficiencyScore, gridScore, feasi
     delta: gridScore < 50 ? 'High carbon grid' : 'Cleaner than average',
   });
 
-  // Rate context — always show, compare to national average
+  // --- Demand response / time-of-use awareness ---
+  // Show in areas with moderate-to-high rates and fossil-heavy grids
+  if (electricityRate > 14 && gridFuelMix && gridFuelMix.fossilTotal > 40) {
+    scenarios.push({
+      title: 'When you use energy matters',
+      impact: 'medium',
+      description: `Many utilities offer time-of-use rates where electricity costs less during off-peak hours (typically nights and weekends). At ${electricityRate}¢/kWh average, actual peak rates can be 50–100% higher while off-peak rates are 30–50% lower. Shifting heavy appliances (dishwasher, laundry, EV charging) to off-peak hours reduces both your bill and strain on the grid.`,
+      delta: 'Shift usage, save more',
+    });
+  }
+
+  // --- Battery storage context ---
+  // Show when good solar potential meets a dirty grid
+  if (solarScore > 50 && feasibilityScore > 40 && gridScore < 60) {
+    scenarios.push({
+      title: 'What about battery storage?',
+      impact: 'medium',
+      description: `With your grid emitting ${emissionFactor} lb CO₂/MWh and strong solar potential, pairing solar with battery storage would let you use more of your own clean energy during evening peak hours instead of drawing from the fossil-heavy grid. A typical 10 kWh home battery costs $10,000–$15,000 before incentives. The federal 30% ITC applies to batteries installed with solar.`,
+      delta: 'Store solar, use at peak',
+    });
+  }
+
+  // --- Rate context ---
   const nationalAvgRate = 16.0;
   const rateAboveAvg = electricityRate > nationalAvgRate;
   scenarios.push({
@@ -221,7 +282,10 @@ function generateRecommendations({ solarScore, efficiencyScore, gridScore, feasi
     delta: `${electricityRate}¢/kWh`,
   });
 
-  return scenarios.slice(0, 4);
+  // Priority sort: show the most impactful scenarios first
+  const priorityMap = { high: 3, medium: 2, low: 1 };
+  scenarios.sort((a, b) => (priorityMap[b.impact] || 0) - (priorityMap[a.impact] || 0));
+  return scenarios.slice(0, 6);
 }
 
 /**
