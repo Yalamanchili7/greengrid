@@ -34,7 +34,7 @@ function sanitize(text) {
 export async function generateReport({ results, location, storyHeadline, storyDetail }) {
   const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
 
-  const { greenScore, breakdown, solar, financial, carbon, gridFuelMix, solarRanking, dataSources } = results;
+  const { greenScore, breakdown, solar, financial, carbon, gridFuelMix, solarRanking, recommendations, dataSources } = results;
 
   const pageWidth = 210;
   const pageHeight = 297;
@@ -263,6 +263,59 @@ export async function generateReport({ results, location, storyHeadline, storyDe
     y += 8;
   }
 
+  // === WHAT THE DATA SHOWS (Scenarios) ===
+  if (recommendations?.length) {
+    checkPage(20);
+    doc.setTextColor(...white);
+    doc.setFontSize(11);
+    doc.setFont('helvetica', 'bold');
+    doc.text('What the Data Shows', margin, y);
+    y += 3;
+    doc.setFontSize(6);
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(100, 100, 100);
+    doc.text('Scenarios based on your location and usage - not advice, just the numbers.', margin, y);
+    y += 5;
+
+    const impactColors = {
+      high: [16, 185, 129],
+      medium: [245, 158, 11],
+      low: [59, 130, 246],
+    };
+
+    recommendations.forEach(rec => {
+      const descLines = doc.splitTextToSize(sanitize(rec.description), contentWidth - 16);
+      const cardH = 10 + descLines.length * 3.2;
+      checkPage(cardH + 4);
+
+      const color = impactColors[rec.impact] || impactColors.medium;
+      doc.setDrawColor(...color);
+      doc.setLineWidth(0.3);
+      doc.setFillColor(8, 30, 20);
+      doc.roundedRect(margin, y, contentWidth, cardH, 2, 2, 'FD');
+
+      doc.setTextColor(...white);
+      doc.setFontSize(8);
+      doc.setFont('helvetica', 'bold');
+      doc.text(sanitize(rec.title), margin + 4, y + 5);
+
+      if (rec.delta) {
+        doc.setFontSize(6);
+        doc.setTextColor(...color);
+        doc.text(sanitize(rec.delta), pageWidth - margin - 4, y + 5, { align: 'right' });
+      }
+
+      doc.setTextColor(...gray);
+      doc.setFontSize(6.5);
+      doc.setFont('helvetica', 'normal');
+      doc.text(descLines, margin + 4, y + 9);
+
+      y += cardH + 3;
+    });
+
+    y += 3;
+  }
+
   // === FINANCIAL SUMMARY ===
   checkPage(55);
   doc.setTextColor(...white);
@@ -332,7 +385,7 @@ export async function generateReport({ results, location, storyHeadline, storyDe
   doc.setFontSize(7);
   doc.setTextColor(...gray);
   doc.text('GreenGrid  |  Data-Powered Energy Intelligence', margin, y);
-  doc.text('github.com/sundeepyalamanchili/greengrid', pageWidth - margin, y, { align: 'right' });
+  doc.text('github.com/Yalamanchili7/greengrid', pageWidth - margin, y, { align: 'right' });
   y += 4;
   doc.setFontSize(6);
   doc.setTextColor(100, 100, 100);
