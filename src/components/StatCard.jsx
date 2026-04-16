@@ -23,11 +23,11 @@ export default function StatCard({ icon, label, value, unit, subtext, delay = 0,
       </div>
       <p className="font-display font-bold text-2xl sm:text-3xl text-white tracking-tight">
         {value}
-        {unit && <span className="text-sm font-normal text-emerald-50/40 ml-1">{unit}</span>}
+        {unit && <span className="text-sm font-normal text-emerald-50/60 ml-1">{unit}</span>}
       </p>
-      <p className="text-sm text-emerald-50/50 font-body mt-1">{label}</p>
+      <p className="text-sm text-emerald-50/60 font-body mt-1">{label}</p>
       {subtext && (
-        <p className="text-xs text-emerald-50/30 font-body mt-2">{subtext}</p>
+        <p className="text-xs text-emerald-50/50 font-body mt-2">{subtext}</p>
       )}
     </div>
   );

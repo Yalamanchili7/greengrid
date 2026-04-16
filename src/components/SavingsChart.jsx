@@ -38,12 +38,12 @@ export default function SavingsChart({ financial, systemCost }) {
         <h3 className="font-display font-semibold text-base text-emerald-50/80">
           25-Year Savings Projection
         </h3>
-        <span className="text-xs font-body text-emerald-50/40">
+        <span className="text-xs font-body text-emerald-50/60">
           Payback in <strong className="text-emerald-400">{paybackYears} years</strong>
         </span>
       </div>
 
-      <div className="w-full h-56">
+      <div className="w-full h-56" role="img" aria-label={`25-year savings projection chart showing $${(financial.savings25yr / 1000).toFixed(0)}k total savings`}>
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart data={data} margin={{ top: 5, right: 5, bottom: 0, left: -5 }}>
             <defs>
@@ -92,15 +92,15 @@ export default function SavingsChart({ financial, systemCost }) {
       <div className="grid grid-cols-3 gap-3 mt-4 pt-4 border-t border-emerald-500/10">
         <div className="text-center">
           <p className="font-display font-bold text-lg text-white">${(financial.savings5yr / 1000).toFixed(1)}k</p>
-          <p className="text-xs text-emerald-50/40 font-body">5-year savings</p>
+          <p className="text-xs text-emerald-50/60 font-body">5-year savings</p>
         </div>
         <div className="text-center">
           <p className="font-display font-bold text-lg text-white">${(financial.savings10yr / 1000).toFixed(1)}k</p>
-          <p className="text-xs text-emerald-50/40 font-body">10-year savings</p>
+          <p className="text-xs text-emerald-50/60 font-body">10-year savings</p>
         </div>
         <div className="text-center">
           <p className="font-display font-bold text-lg text-emerald-400">${(financial.savings25yr / 1000).toFixed(1)}k</p>
-          <p className="text-xs text-emerald-50/40 font-body">25-year savings</p>
+          <p className="text-xs text-emerald-50/60 font-body">25-year savings</p>
         </div>
       </div>
     </div>

@@ -254,6 +254,7 @@ export default function AddressSearch({ value, onChange, onSelect, disabled }) {
           onClick={handleUseMyLocation}
           disabled={disabled || geoLoading}
           title="Use my current location"
+          aria-label="Use my current location"
           className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 rounded-lg
             text-emerald-500/40 hover:text-emerald-400 hover:bg-emerald-500/10
             disabled:opacity-30 disabled:cursor-not-allowed transition-all"
@@ -280,10 +281,11 @@ export default function AddressSearch({ value, onChange, onSelect, disabled }) {
 
       {/* Autocomplete dropdown */}
       {isOpen && suggestions.length > 0 && (
-        <div className="absolute z-50 w-full mt-1.5 rounded-xl overflow-hidden
+        <div role="listbox" aria-label="Address suggestions" className="absolute z-50 w-full mt-1.5 rounded-xl overflow-hidden
           bg-emerald-950/95 border border-emerald-500/20 backdrop-blur-xl shadow-xl shadow-black/40">
           {suggestions.map((suggestion, i) => (
             <button
+              role="option"
               key={`${suggestion.latitude}-${suggestion.longitude}-${i}`}
               type="button"
               onClick={() => handleSelect(suggestion)}
@@ -298,7 +300,7 @@ export default function AddressSearch({ value, onChange, onSelect, disabled }) {
                   {suggestion.displayName}
                 </p>
                 {suggestion.city && suggestion.state && (
-                  <p className="text-[11px] text-emerald-50/30 font-body truncate">
+                  <p className="text-[11px] text-emerald-50/50 font-body truncate">
                     {suggestion.city}, {suggestion.state}
                     {suggestion.postcode ? ` ${suggestion.postcode}` : ''}
                   </p>
@@ -308,7 +310,7 @@ export default function AddressSearch({ value, onChange, onSelect, disabled }) {
           ))}
 
           <div className="px-4 py-1.5 bg-emerald-950/50">
-            <p className="text-[9px] text-emerald-50/15 font-body">
+            <p className="text-[9px] text-emerald-50/40 font-body">
               Powered by OpenStreetMap Nominatim
             </p>
           </div>

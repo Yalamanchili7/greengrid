@@ -62,7 +62,7 @@ export default function App() {
     <div className="min-h-screen flex flex-col">
       <Header />
       
-      <main className="flex-1">
+      <main className="flex-1" aria-live="polite" aria-busy={state === 'loading'}>
         {(state === 'idle' || state === 'loading' || state === 'error') && (
           <HeroInput
             onAnalyze={handleAnalyze}

@@ -43,12 +43,12 @@ export default function GreenScoreGauge({ score, breakdown }) {
       <h2 className="font-display font-semibold text-lg text-emerald-50/80 mb-1">
         Your GreenScore
       </h2>
-      <p className="text-xs text-emerald-50/30 font-body mb-5 text-center">
+      <p className="text-xs text-emerald-50/50 font-body mb-5 text-center">
         How well-positioned your home is for clean energy
       </p>
 
       {/* Gauge Ring */}
-      <div className="relative" style={{ width: size, height: size }}>
+      <div className="relative" style={{ width: size, height: size }} role="img" aria-label={`GreenScore: ${animatedScore} out of 100`}>
         <svg width={size} height={size} className="-rotate-90">
           {/* Background ring */}
           <circle
@@ -85,7 +85,7 @@ export default function GreenScoreGauge({ score, breakdown }) {
           >
             {animatedScore}
           </span>
-          <span className="text-xs text-emerald-50/40 font-body mt-1">out of 100</span>
+          <span className="text-xs text-emerald-50/60 font-body mt-1">out of 100</span>
           <span
             className="mt-2 px-3 py-0.5 rounded-full text-xs font-semibold font-body"
             style={{ backgroundColor: `${color}15`, color }}
@@ -98,12 +98,14 @@ export default function GreenScoreGauge({ score, breakdown }) {
       {/* Breakdown toggle */}
       <button
         onClick={() => setShowBreakdown(!showBreakdown)}
-        className="mt-6 text-xs text-emerald-400/50 hover:text-emerald-400 font-body transition-colors flex items-center gap-1"
+        aria-expanded={showBreakdown}
+        className="mt-6 text-xs text-emerald-400/70 hover:text-emerald-400 font-body transition-colors flex items-center gap-1"
       >
         {showBreakdown ? 'Hide' : 'Show'} breakdown
         <svg
           className={`w-3 h-3 transition-transform ${showBreakdown ? 'rotate-180' : ''}`}
           fill="none" viewBox="0 0 24 24" stroke="currentColor"
+          aria-hidden="true"
         >
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
         </svg>

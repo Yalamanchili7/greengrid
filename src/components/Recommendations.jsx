@@ -19,7 +19,7 @@ export default function Recommendations({ recommendations }) {
       <h3 className="font-display font-semibold text-base text-emerald-50/80 mb-1">
         What the Data Shows
       </h3>
-      <p className="text-xs text-emerald-50/30 font-body mb-5">
+      <p className="text-xs text-emerald-50/50 font-body mb-5">
         Scenarios based on your location and usage — not advice, just the numbers.
       </p>
 
@@ -27,7 +27,7 @@ export default function Recommendations({ recommendations }) {
         {recommendations.map((rec, i) => {
           const style = scenarioStyles[rec.impact] || scenarioStyles.medium;
           return (
-            <div
+            <article
               key={i}
               className={`p-4 rounded-xl border ${style.border} ${style.bg} transition-all duration-300`}
             >
@@ -49,15 +49,15 @@ export default function Recommendations({ recommendations }) {
                   )}
                 </div>
               </div>
-              <p className="text-xs text-emerald-50/40 font-body leading-relaxed">
+              <p className="text-xs text-emerald-50/60 font-body leading-relaxed">
                 {rec.description}
               </p>
-            </div>
+            </article>
           );
         })}
       </div>
 
-      <p className="text-[10px] text-emerald-50/15 font-body mt-4 text-center">
+      <p className="text-[10px] text-emerald-50/40 font-body mt-4 text-center">
         These scenarios are calculated from government data for your specific location. 
         GreenGrid does not sell solar products or services.
       </p>

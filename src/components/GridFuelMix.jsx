@@ -36,12 +36,12 @@ export default function GridFuelMix({ gridFuelMix, emissionFactor }) {
       <h3 className="font-display font-semibold text-base text-emerald-50/80 mb-1">
         Your grid's fuel mix
       </h3>
-      <p className="text-xs text-emerald-50/30 font-body mb-5">
+      <p className="text-xs text-emerald-50/50 font-body mb-5">
         {subregionName} — where your electricity comes from
       </p>
 
       {/* Stacked horizontal bar */}
-      <div className="w-full h-6 rounded-lg overflow-hidden flex mb-4">
+      <div className="w-full h-6 rounded-lg overflow-hidden flex mb-4" role="img" aria-label={`Grid fuel mix: ${fossilTotal}% fossil fuels, ${nuclearTotal}% nuclear, ${renewableTotal}% renewable`}>
         {fuels.map((fuel) => (
           <div
             key={fuel.key}
@@ -65,7 +65,7 @@ export default function GridFuelMix({ gridFuelMix, emissionFactor }) {
                 className="w-2.5 h-2.5 rounded-sm shrink-0"
                 style={{ backgroundColor: fuel.color }}
               />
-              <span className="text-xs text-emerald-50/50 font-body">{fuel.label}</span>
+              <span className="text-xs text-emerald-50/60 font-body">{fuel.label}</span>
             </div>
             <span className="text-xs font-mono text-emerald-50/70">{fuel.percent}%</span>
           </div>
@@ -78,24 +78,24 @@ export default function GridFuelMix({ gridFuelMix, emissionFactor }) {
           <p className="font-display font-bold text-lg text-white">
             {fossilTotal}%
           </p>
-          <p className="text-[11px] text-emerald-50/40 font-body">Fossil fuels</p>
+          <p className="text-[11px] text-emerald-50/60 font-body">Fossil fuels</p>
         </div>
         <div className="text-center">
           <p className="font-display font-bold text-lg text-white">
             {nuclearTotal}%
           </p>
-          <p className="text-[11px] text-emerald-50/40 font-body">Nuclear</p>
+          <p className="text-[11px] text-emerald-50/60 font-body">Nuclear</p>
         </div>
         <div className="text-center">
           <p className="font-display font-bold text-lg text-emerald-400">
             {renewableTotal}%
           </p>
-          <p className="text-[11px] text-emerald-50/40 font-body">Renewable</p>
+          <p className="text-[11px] text-emerald-50/60 font-body">Renewable</p>
         </div>
       </div>
 
       {/* Context line */}
-      <p className="text-[10px] text-emerald-50/20 font-body mt-4 text-center">
+      <p className="text-[10px] text-emerald-50/40 font-body mt-4 text-center">
         {emissionFactor} lb CO₂/MWh · {emissionFactor < 823
           ? `${Math.round(((823 - emissionFactor) / 823) * 100)}% cleaner than the US average`
           : emissionFactor > 823

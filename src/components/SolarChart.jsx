@@ -33,7 +33,7 @@ export default function SolarChart({ monthlyOutput, annualOutput }) {
         </span>
       </div>
 
-      <div className="w-full h-56">
+      <div className="w-full h-56" role="img" aria-label={`Monthly solar generation chart showing ${annualOutput.toLocaleString()} kWh per year`}>
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={data} margin={{ top: 5, right: 5, bottom: 0, left: -15 }}>
             <CartesianGrid strokeDasharray="3 3" stroke="rgba(16,185,129,0.06)" vertical={false} />
