@@ -16,7 +16,7 @@ import { fetchElectricityRate } from './eiaApi';
 import { getEmissionFactor, STATE_AVG_CONSUMPTION, getGridFuelMix, getSolarResourceRanking } from './epaData';
 
 const NREL_API_KEY = import.meta.env.VITE_NREL_API_KEY || '';
-const NREL_BASE_URL = 'https://developer.nrel.gov/api/pvwatts/v8.json';
+const NREL_BASE_URL = 'https://developer.nlr.gov/api/pvwatts/v8.json';
 const NOMINATIM_URL = 'https://nominatim.openstreetmap.org/search';
 
 /**
@@ -74,7 +74,7 @@ export async function geocodeAddress(address) {
  */
 export async function fetchSolarData(latitude, longitude) {
   if (!NREL_API_KEY) {
-    throw new Error('NREL API key not configured. Please add VITE_NREL_API_KEY to your .env file. Get a free key at developer.nrel.gov/signup/');
+    throw new Error('NREL API key not configured. Please add VITE_NREL_API_KEY to your .env file. Get a free key at developer.nlr.gov/signup/');
   }
 
   const params = new URLSearchParams({

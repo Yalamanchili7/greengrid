@@ -11,7 +11,7 @@ export default function DataSources({ dataSources, carbon }) {
       icon: '🛰️',
       label: 'Solar Irradiance',
       value: dataSources.solar,
-      link: 'https://developer.nrel.gov/docs/solar/pvwatts/v8/',
+      link: 'https://developer.nlr.gov/docs/solar/pvwatts/v8/',
     },
     {
       icon: '💡',

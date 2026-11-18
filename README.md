@@ -49,7 +49,7 @@ No other consumer-facing tool connects all three of these public data sources in
 
 | Source | Type | What it provides |
 |--------|------|------------------|
-| [NREL PVWatts API v8](https://developer.nrel.gov/docs/solar/pvwatts/v8/) | Live API | Solar generation estimates from satellite data (NSRDB) |
+| [NREL PVWatts API v8](https://developer.nlr.gov/docs/solar/pvwatts/v8/) | Live API | Solar generation estimates from satellite data (NSRDB) |
 | [EIA Open Data API v2](https://www.eia.gov/opendata/) | Live API | Residential electricity rates by state |
 | [EPA eGRID2023](https://www.epa.gov/egrid) | Static dataset | CO₂ emission rates + fuel mix by subregion (27 US subregions) |
 | [EIA RECS](https://www.eia.gov/consumption/residential/) | Static dataset | State average household consumption |
@@ -61,7 +61,7 @@ All data is fetched live at analysis time. Nothing is stored.
 
 ### Prerequisites
 - Node.js 18+
-- NREL API key (free): [developer.nrel.gov/signup](https://developer.nrel.gov/signup/)
+- NREL API key (free): [developer.nlr.gov/signup](https://developer.nlr.gov/signup/)
 - EIA API key (free): [eia.gov/opendata/register](https://www.eia.gov/opendata/register.php)
 
 ### Installation
